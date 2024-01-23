@@ -1,6 +1,9 @@
 <?php 
+session_start();
 $form = [
-    'name' => ''
+    'name' => '', 
+    'email' => '',
+    'password' => '',
 ];
 $error = [];
 
@@ -14,6 +17,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form['name'] = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
     if($form['name'] === '') {
         $error['name'] = 'blank';
+    }
+    $form['email'] = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    if($form['email'] === ''){
+        $error['email'] = 'blank';
+    }
+    $form['password'] = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+    if($form['password'] === ''){
+        $error['password'] = 'blank';
+    } elseif(strlen($form['password']) < 4) {
+        $error['password'] = 'length';
+    }
+
+    // 画像のチェック
+    $image = $_FILES['image'];
+    if($image['name'] !== '' && $image['error'] === 0) {
+        $type = mime_content_type($image['tmp_name']);
+        if($type !== 'image/png' && $type !== 'image/jpeg') {
+            $error['image'] = 'type';
+        }
+    }
+
+    if(empty($error)) {
+        $_SESSION['form'] =$form;
+
+        //画像のアップロード
+        if($image['name'] !== '') {
+            $filename = date('YmdHis').'_'.$image['name'];
+            if(!move_uploaded_file($image['tmp_name'], '../member_picture/'.$filename)) {
+                die('ファイルのアップロードに失敗しました');
+            }
+            $_SESSION['form']['image'] = $filename;
+        } else {
+            $_SESSION['form']['image'] = '';
+        }
+
+        header('Location: check.php');
+        exit();
     }
 }
 ?>
@@ -49,19 +89,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </dd>
                 <dt>メールアドレス<span class="required">必須</span></dt>
                 <dd>
-                    <input type="text" name="email" size="35" maxlength="255" value=""/>
-                    <p class="error">* メールアドレスを入力してください</p>
+                    <input type="text" name="email" size="35" maxlength="255" value="<?php echo h($form['email']); ?>"/>
+                    <?php if(isset($error['email']) && $error['email'] === 'blank'): ?>
+                     <p class="error">* メールアドレスを入力してください</p>
+                    <?php endif; ?>
                     <p class="error">* 指定されたメールアドレスはすでに登録されています</p>
                 <dt>パスワード<span class="required">必須</span></dt>
                 <dd>
-                    <input type="password" name="password" size="10" maxlength="20" value=""/>
-                    <p class="error">* パスワードを入力してください</p>
-                    <p class="error">* パスワードは4文字以上で入力してください</p>
+                    <input type="password" name="password" size="10" maxlength="20" value="<?php echo h($form['password']); ?>"/>
+                    <?php if(isset($error['password']) && $error['password'] === 'blank'): ?>
+                     <p class="error">* パスワードを入力してください</p>
+                    <?php endif; ?>
+                    <?php if(isset($error['password']) && $error['password'] === 'length'): ?>
+                     <p class="error">* パスワードは4文字以上で入力してください</p>
+                    <?php endif; ?>
                 </dd>
                 <dt>写真など</dt>
                 <dd>
                     <input type="file" name="image" size="35" value=""/>
-                    <p class="error">* 写真などは「.png」または「.jpg」の画像を指定してください</p>
+                    <?php if(isset ($error['image']) && $error['image'] === 'type'): ?>
+                     <p class="error">* 写真などは「.png」または「.jpg」の画像を指定してください</p>
+                    <?php endif; ?>
                     <p class="error">* 恐れ入りますが、画像を改めて指定してください</p>
                 </dd>
             </dl>
