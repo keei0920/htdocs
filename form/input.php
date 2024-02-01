@@ -29,13 +29,14 @@ if(!empty($_POST['btn_submit'])) {
 
 ?>
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <title>お問合せフォーム</title>
+  </head>
 <body>
   <?php if($pageFlag === 1): ?>
     <?php if($_POST['csrf'] === $_SESSION['csrfToken']) :?>
@@ -105,41 +106,63 @@ if(!empty($_POST['btn_submit'])) {
       };?>
       <?php echo '</ul>' ;?>
     <?php endif; ?>
-    <form method="POST" action="input.php">
-      氏名
-      <input type="text" name="your_name" value="<?php if(!empty($_POST['your_name'])) {echo h($_POST['your_name']);} ?>">
-      <br>
-      メールアドレス
-      <input type="email" name="email" value="<?php if(!empty($_POST['email'])) {echo h($_POST['email']);} ?>">
-      <br>
-      ホームページ
-      <input type="url" name="url" value="<?php if(!empty($_POST['url'])) {echo h($_POST['url']);} ?>">
-      <br>
-      性別
-      <input type="radio" name="gender" value="0"
-      <?php if(isset($_POST['gender']) && $_POST['gender'] === '0') {echo 'checked';} ?>>男性
-      <input type="radio" name="gender" value="1"
-      <?php if(isset($_POST['gender']) && $_POST['gender'] === '1') {echo 'checked';} ?>>女性
-      <br>
-      年齢
-      <select name="age">
-        <option value="">選択してください</option>
-        <option value="1" <?php if(isset($_POST['age']) && $_POST['age'] === '1') {echo 'selected';} ?>>〜19歳</option>
-        <option value="2">20歳〜29歳</option>
-        <option value="3">30歳〜39歳</option>
-        <option value="4">40〜49歳</option>
-        <option value="5">50〜59歳</option>
-        <option value="6">60歳〜</option>
-      </select>
-      <br>
-      お問合せ内容
-      <textarea name="contact"><?php if(!empty($_POST['contact'])) {echo h($_POST['contact']);} ?></textarea>
-      <br>
-      <input type="checkbox" name="caution" value="1">注意事項にチェックする
-      <br>
-      <input type="submit" name="btn_confirm" value="確認画面へ">
-      <input type="hidden" name="csrf" value="<?php echo $token; ?>">
-    </form>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+        <form method="POST" action="input.php">
+          <div class="mb-3">
+            <label for="your_name" class="form-label">氏名</label>
+            <input type="text" id="your_name" class="form-control" value="<?php if(!empty($_POST['your_name'])) {echo h($_POST['your_name']);} ?>">
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">メールアドレス</label>
+            <input type="email" id="email" class="form-control" value="<?php if(!empty($_POST['email'])) {echo h($_POST['email']);} ?>">
+          </div>
+          <div class="mb-3">
+            <label for="url" class="form-label">ホームページ</label>
+            <input type="url" id="url" class="form-control" value="<?php if(!empty($_POST['url'])) {echo h($_POST['url']);} ?>">
+          </div>
+          <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" name="gender" id="gender1" value="0"
+            <?php if(isset($_POST['gender']) && $_POST['gender'] === '0') {echo 'checked';} ?>>
+            <label class="form-check-label" for="gender1">男性</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" name="gender" id="gender2" value="1"
+            <?php if(isset($_POST['gender']) && $_POST['gender'] === '1') {echo 'checked';} ?>>
+            <label class="form-check-label" for="gender2">女性</label>
+          </div>
+      
+          <div class="mb-3">
+            <label for="age">年齢</label>
+            <select class="form-select" id="age" name="age">
+              <option value="">選択してください</option>
+              <option value="1" <?php if(isset($_POST['age']) && $_POST['age'] === '1') {echo 'selected';} ?>>〜19歳</option>
+              <option value="2">20歳〜29歳</option>
+              <option value="3">30歳〜39歳</option>
+              <option value="4">40〜49歳</option>
+              <option value="5">50〜59歳</option>
+              <option value="6">60歳〜</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="contact" class="form-label">お問合せ内容</label>
+            <textarea class="form-control" rows="5" id="contact" name="contact"><?php if(!empty($_POST['contact'])) {echo h($_POST['contact']);} ?></textarea>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="caution" id="caution" value="1">
+            <label class="form-check-label" for="caution">注意事項にチェックする</label>
+          </div>
+
+          <input type="submit" class="btn btn-info" name="btn_confirm" value="確認画面へ">
+          <input type="hidden" name="csrf" value="<?php echo $token; ?>">
+        </form>
+        </div><!-- .col-md-6 -->
+      </div><!-- .row -->
+    </div><!-- .container -->
+      
   <?php endif; ?>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
 </html>
