@@ -84,6 +84,12 @@ if(!empty($_POST['btn_submit'])) {
 
   <?php if($pageFlag === 2): ?>
     <?php if($_POST['csrf'] === $_SESSION['csrfToken']) :?>
+
+    <?php 
+    require '../mainte/insert.php';
+    insertContact($_POST);
+    ?>
+
     送信が完了しました
     <?php unset($_SESSION['csrf_Token']); ?>
     <?php endif; ?>
@@ -113,15 +119,15 @@ if(!empty($_POST['btn_submit'])) {
         <form method="POST" action="input.php">
           <div class="mb-3">
             <label for="your_name" class="form-label">氏名</label>
-            <input type="text" id="your_name" class="form-control" value="<?php if(!empty($_POST['your_name'])) {echo h($_POST['your_name']);} ?>">
+            <input type="text" id="your_name" name="your_name" class="form-control" value="<?php if(!empty($_POST['your_name'])) {echo h($_POST['your_name']);} ?>">
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">メールアドレス</label>
-            <input type="email" id="email" class="form-control" value="<?php if(!empty($_POST['email'])) {echo h($_POST['email']);} ?>">
+            <input type="email" id="email" name="email" class="form-control" value="<?php if(!empty($_POST['email'])) {echo h($_POST['email']);} ?>">
           </div>
           <div class="mb-3">
             <label for="url" class="form-label">ホームページ</label>
-            <input type="url" id="url" class="form-control" value="<?php if(!empty($_POST['url'])) {echo h($_POST['url']);} ?>">
+            <input type="url" id="url" name="url" class="form-control" value="<?php if(!empty($_POST['url'])) {echo h($_POST['url']);} ?>">
           </div>
           <div class="form-check form-check-inline">
             <input type="radio" class="form-check-input" name="gender" id="gender1" value="0"
